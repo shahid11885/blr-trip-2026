@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLR Trip — Mar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #ddd9d0;
+    --border-strong: #c4bfb4;
+    --azra: #c0392b;
+    --azra-light: #fdf0ee;
+    --azra-mid: rgba(192,57,43,0.1);
+    --sameera: #1a5fa8;
+    --sameera-light: #eef4fc;
+    --sameera-mid: rgba(26,95,168,0.1);
+    --ink: #1a1814;
+    --muted: #7a7570;
+    --rule: #e8e4dc;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Syne', sans-serif;
+    --accent-green: #2d6a4f;
+    --accent-green-light: #eef6f1;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); min-height: 100vh; padding: 40px 20px 80px; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; animation: fadeIn 0.4s ease both; }
+  h1 { font-family: var(--display); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  h1 span.dest { color: var(--azra); }
+  .subtitle { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 6px; text-transform: uppercase; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .leg-swatch { width: 28px; height: 10px; border-radius: 2px; }
+
+  .section-label { font-family: var(--display); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 10px; margin-top: 36px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-strong); }
+
+  table { width: 100%; border-collapse: collapse; border: 1.5px solid var(--border-strong); border-radius: 8px; overflow: hidden; font-size: 0.82rem; animation: fadeIn 0.4s 0.1s ease both; }
+  th { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); background: #efece6; padding: 9px 14px; text-align: left; border-bottom: 1.5px solid var(--border-strong); white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+
+  tr.azra-row { background: var(--azra-light); }
+  tr.sameera-row { background: var(--sameera-light); }
+  tr.azra-row td:first-child { border-left: 3px solid var(--azra); }
+  tr.sameera-row td:first-child { border-left: 3px solid var(--sameera); }
+  tr:not(.phase-row):not(.layover-row):hover { filter: brightness(0.97); }
+
+  tr.phase-row td { background: var(--ink); color: #f5f3ee; font-family: var(--display); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 7px 14px; border-bottom: none; }
+  tr.layover-row td { background: #f9f8f5; padding: 6px 14px; }
+
+  .name-cell { font-family: var(--display); font-weight: 700; font-size: 1rem; }
+  .name-cell.azra { color: var(--azra); }
+  .name-cell.sameera { color: var(--sameera); }
+  .mono-cell { font-family: var(--mono); font-size: 0.75rem; }
+  .conf-badge { display: inline-block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; padding: 2px 7px; border-radius: 4px; background: var(--sameera-mid); color: var(--sameera); border: 1px solid rgba(26,95,168,0.2); letter-spacing: 0.05em; }
+  .route-cell { font-family: var(--mono); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.05em; white-space: nowrap; }
+  .time-cell { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; }
+  .tz { font-size: 0.6rem; color: var(--muted); display: block; }
+  .flight-num { font-family: var(--mono); font-size: 0.78rem; font-weight: 500; }
+  .traveler-chip { display: inline-block; font-family: var(--mono); font-size: 0.6rem; font-weight: 500; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+  .chip-azra { background: var(--azra-mid); color: var(--azra); border: 1px solid rgba(192,57,43,0.25); }
+  .chip-sameera { background: var(--sameera-mid); color: var(--sameera); border: 1px solid rgba(26,95,168,0.2); }
+  .layover-text { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+
+  /* Stay table */
+  .stay-table { border-color: var(--accent-green); background: var(--accent-green-light); }
+  .stay-table th { background: #d8eee4; color: var(--accent-green); border-bottom-color: var(--accent-green); }
+  .stay-table td { border-bottom-color: #c5e0d0; font-family: var(--mono); }
+  .stay-table tr:last-child td { border-bottom: none; }
+  .nights-big { font-family: var(--display); font-size: 2rem; font-weight: 800; color: var(--accent-green); line-height: 1; }
+  .nights-label { font-family: var(--mono); font-size: 0.65rem; color: var(--accent-green); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 640px) {
+    th:nth-child(n+7), td:nth-child(n+7) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <h1>Trip to <span class="dest">Bengaluru</span></h1>
+      <div class="subtitle">Mar 11 – 30, 2026 &nbsp;·&nbsp; 20 days &nbsp;·&nbsp; 2 travelers</div>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--azra)"></div>Azra · SEA</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--sameera)"></div>Sameera · SFO</div>
+    </div>
+  </header>
+
+  <!-- TRAVELER SUMMARY -->
+  <div class="section-label">Traveler Summary</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Traveler</th>
+        <th>Origin</th>
+        <th>Outbound</th>
+        <th>Return</th>
+        <th>Confirmation</th>
+        <th>Arrives BLR</th>
+        <th>Departs BLR</th>
+        <th>Lands Home</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="azra-row">
+        <td><div class="name-cell azra">Azra</div></td>
+        <td class="mono-cell">SEA</td>
+        <td class="mono-cell">DL 20 · VS 316</td>
+        <td class="mono-cell">AF 191 · DL 81</td>
+        <td class="mono-cell">—</td>
+        <td class="mono-cell" style="color:var(--azra);font-weight:500">Mar 13 · 3:20 AM IST</td>
+        <td class="mono-cell">Mar 30 · 1:25 AM IST</td>
+        <td class="mono-cell">Mar 30 · 5:38 PM PDT</td>
+      </tr>
+      <tr class="sameera-row">
+        <td><div class="name-cell sameera">Sameera</div></td>
+        <td class="mono-cell">SFO</td>
+        <td class="mono-cell">LH 455 · LH 754</td>
+        <td class="mono-cell">LH 755 · LH 454</td>
+        <td><span class="conf-badge">85YZP8</span></td>
+        <td class="mono-cell" style="color:var(--sameera);font-weight:500">Mar 13 · 1:50 AM IST</td>
+        <td class="mono-cell">Mar 30 · 3:00 AM IST</td>
+        <td class="mono-cell">Mar 30 · 12:40 PM PDT</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- STAY -->
+  <div class="section-label">Time Together in Bengaluru</div>
+  <table class="stay-table">
+    <thead>
+      <tr>
+        <th>Duration</th>
+        <th>Dates</th>
+        <th>Azra Arrives</th>
+        <th>Sameera Arrives</th>
+        <th>Azra Departs</th>
+        <th>Sameera Departs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="nights-big">17</div><div class="nights-label">nights</div></td>
+        <td class="mono-cell">Mar 13 – Mar 30, 2026</td>
+        <td style="color:var(--azra);font-family:var(--mono);font-weight:500;font-size:0.78rem">Mar 13 · 3:20 AM</td>
+        <td style="color:var(--sameera);font-family:var(--mono);font-weight:500;font-size:0.78rem">Mar 13 · 1:50 AM</td>
+        <td style="color:var(--azra);font-family:var(--mono);font-weight:500;font-size:0.78rem">Mar 30 · 1:25 AM</td>
+        <td style="color:var(--sameera);font-family:var(--mono);font-weight:500;font-size:0.78rem">Mar 30 · 3:00 AM</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- FULL FLIGHT LOG -->
+  <div class="section-label">Full Flight Log</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Traveler</th>
+        <th>Date</th>
+        <th>Route</th>
+        <th>Departs</th>
+        <th>Arrives</th>
+        <th>Flight</th>
+        <th>Airline</th>
+        <th>Terminal / Conf</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="phase-row"><td colspan="8">✈ Outbound — Wed, Mar 11</td></tr>
+
+      <tr class="azra-row">
+        <td><span class="traveler-chip chip-azra">Azra</span></td>
+        <td class="mono-cell">Mar 11</td>
+        <td class="route-cell">SEA → LHR</td>
+        <td class="time-cell">5:40 PM <span class="tz">PDT</span></td>
+        <td class="time-cell">Mar 12 · 10:30 AM <span class="tz">GMT</span></td>
+        <td class="flight-num">DL 20</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Delta</td>
+        <td class="mono-cell">—</td>
+      </tr>
+      <tr class="sameera-row">
+        <td><span class="traveler-chip chip-sameera">Sameera</span></td>
+        <td class="mono-cell">Mar 11</td>
+        <td class="route-cell">SFO → FRA</td>
+        <td class="time-cell">3:40 PM <span class="tz">PDT</span></td>
+        <td class="time-cell">Mar 12 · 10:30 AM <span class="tz">GMT+1</span></td>
+        <td class="flight-num">LH 455</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Lufthansa</td>
+        <td class="mono-cell">T1 · <span class="conf-badge">85YZP8</span></td>
+      </tr>
+
+      <tr class="phase-row"><td colspan="8">⟳ Connections — Thu, Mar 12</td></tr>
+
+      <tr class="layover-row"><td colspan="8"><div class="layover-text"><span class="traveler-chip chip-azra">Azra</span>⏱ 1h 25m layover · London (LHR)</div></td></tr>
+      <tr class="azra-row">
+        <td><span class="traveler-chip chip-azra">Azra</span></td>
+        <td class="mono-cell">Mar 12</td>
+        <td class="route-cell">LHR → BLR</td>
+        <td class="time-cell">11:55 AM <span class="tz">GMT</span></td>
+        <td class="time-cell">Mar 13 · 3:20 AM <span class="tz">IST</span></td>
+        <td class="flight-num">VS 316</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Virgin Atlantic</td>
+        <td class="mono-cell">—</td>
+      </tr>
+
+      <tr class="layover-row"><td colspan="8"><div class="layover-text"><span class="traveler-chip chip-sameera">Sameera</span>⏱ 2h 5m layover · Frankfurt (FRA)</div></td></tr>
+      <tr class="sameera-row">
+        <td><span class="traveler-chip chip-sameera">Sameera</span></td>
+        <td class="mono-cell">Mar 12</td>
+        <td class="route-cell">FRA → BLR</td>
+        <td class="time-cell">12:35 PM <span class="tz">GMT+1</span></td>
+        <td class="time-cell">Mar 13 · 1:50 AM <span class="tz">IST</span></td>
+        <td class="flight-num">LH 754</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Lufthansa</td>
+        <td class="mono-cell">T1 · <span class="conf-badge">85YZP8</span></td>
+      </tr>
+
+      <tr class="phase-row"><td colspan="8">✈ Return — Mon, Mar 30</td></tr>
+
+      <tr class="azra-row">
+        <td><span class="traveler-chip chip-azra">Azra</span></td>
+        <td class="mono-cell">Mar 30</td>
+        <td class="route-cell">BLR → CDG</td>
+        <td class="time-cell">1:25 AM <span class="tz">IST</span></td>
+        <td class="time-cell">Mar 30 · 8:15 AM <span class="tz">GMT+2</span></td>
+        <td class="flight-num">AF 191</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Air France</td>
+        <td class="mono-cell">—</td>
+      </tr>
+      <tr class="sameera-row">
+        <td><span class="traveler-chip chip-sameera">Sameera</span></td>
+        <td class="mono-cell">Mar 30</td>
+        <td class="route-cell">BLR → FRA</td>
+        <td class="time-cell">3:00 AM <span class="tz">IST</span></td>
+        <td class="time-cell">Mar 30 · 9:05 AM <span class="tz">GMT+2</span></td>
+        <td class="flight-num">LH 755</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Lufthansa</td>
+        <td class="mono-cell">T2 · <span class="conf-badge">85YZP8</span></td>
+      </tr>
+
+      <tr class="layover-row"><td colspan="8"><div class="layover-text"><span class="traveler-chip chip-azra">Azra</span>⏱ 7h 45m layover · Paris (CDG)</div></td></tr>
+      <tr class="layover-row"><td colspan="8"><div class="layover-text"><span class="traveler-chip chip-sameera">Sameera</span>⏱ 1h 20m layover · Frankfurt (FRA)</div></td></tr>
+
+      <tr class="azra-row">
+        <td><span class="traveler-chip chip-azra">Azra</span></td>
+        <td class="mono-cell">Mar 30</td>
+        <td class="route-cell">CDG → SEA</td>
+        <td class="time-cell">4:00 PM <span class="tz">GMT+2</span></td>
+        <td class="time-cell">Mar 30 · 5:38 PM <span class="tz">PDT</span></td>
+        <td class="flight-num">DL 81</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Delta</td>
+        <td class="mono-cell">—</td>
+      </tr>
+      <tr class="sameera-row">
+        <td><span class="traveler-chip chip-sameera">Sameera</span></td>
+        <td class="mono-cell">Mar 30</td>
+        <td class="route-cell">FRA → SFO</td>
+        <td class="time-cell">10:25 AM <span class="tz">GMT+2</span></td>
+        <td class="time-cell">Mar 30 · 12:40 PM <span class="tz">PDT</span></td>
+        <td class="flight-num">LH 454</td>
+        <td class="mono-cell" style="font-size:0.72rem;color:var(--muted)">Lufthansa</td>
+        <td class="mono-cell">T1 · <span class="conf-badge">85YZP8</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>
