@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLR Trip — Mar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --azra: #e8b86d;
+    --azra-dim: rgba(232,184,109,0.12);
+    --sameera: #7eb8f7;
+    --sameera-dim: rgba(126,184,247,0.12);
+    --both: #b088f5;
+    --both-dim: rgba(176,136,245,0.12);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Playfair Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  header {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .destination {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--azra) 0%, var(--both) 50%, var(--sameera) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* SUMMARY CARDS */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .summary-card.azra::before { background: var(--azra); }
+  .summary-card.sameera::before { background: var(--sameera); }
+
+  .traveler-name {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .traveler-name.azra { color: var(--azra); }
+  .traveler-name.sameera { color: var(--sameera); }
+
+  .traveler-route {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .traveler-stats {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat { }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .stat-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* TIMELINE SECTION */
+  .phase-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    padding: 8px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .phase-label.outbound { animation: fadeUp 0.6s 0.2s ease both; }
+  .phase-label.stay { animation: fadeUp 0.6s 0.3s ease both; }
+  .phase-label.return { animation: fadeUp 0.6s 0.4s ease both; }
+
+  /* FLIGHT ROW */
+  .flight-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .flight-row:hover {
+    border-color: #353a4a;
+    transform: translateY(-1px);
+  }
+
+  .flight-row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .flight-row.azra::before { background: var(--azra); }
+  .flight-row.sameera::before { background: var(--sameera); }
+  .flight-row.both::before { background: linear-gradient(to bottom, var(--azra), var(--sameera)); }
+
+  .flight-row.azra { background: linear-gradient(to right, var(--azra-dim), var(--surface)); }
+  .flight-row.sameera { background: linear-gradient(to right, var(--sameera-dim), var(--surface)); }
+  .flight-row.both { background: linear-gradient(to right, var(--both-dim), var(--surface)); }
+
+  .time-col {
+    text-align: right;
+  }
+
+  .depart-time {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .depart-tz {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .route-col { }
+
+  .route-airports {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arrow {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .route-details {
+    display: flex;
+    gap: 16px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+
+  .route-detail {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .route-arrive {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .traveler-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .badge.azra {
+    background: var(--azra-dim);
+    color: var(--azra);
+    border: 1px solid rgba(232,184,109,0.25);
+  }
+
+  .badge.sameera {
+    background: var(--sameera-dim);
+    color: var(--sameera);
+    border: 1px solid rgba(126,184,247,0.25);
+  }
+
+  /* LAYOVER ROW */
+  .layover-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 22px;
+    margin-bottom: 10px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .layover-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  .layover-line {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    margin: 0 9px;
+    flex-shrink: 0;
+  }
+
+  /* STAY CARD */
+  .stay-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stay-nights {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--both);
+  }
+
+  .stay-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+  }
+
+  .stay-dates {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .arrival-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .arrival-item {
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--surface2);
+  }
+
+  .arrival-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .arrival-time {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .arrival-time.azra { color: var(--azra); }
+  .arrival-time.sameera { color: var(--sameera); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 560px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    .flight-row { grid-template-columns: 70px 1fr; }
+    .traveler-badge { display: none; }
+    .arrival-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="destination">Bengaluru, India</div>
+    <div class="meta">Mar 11 – 30, 2026 &nbsp;·&nbsp; 20 days &nbsp;·&nbsp; 2 travelers</div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--azra)"></div>
+        <span style="color:var(--azra)">Azra</span> <span style="color:var(--muted)">· SEA</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--sameera)"></div>
+        <span style="color:var(--sameera)">Sameera</span> <span style="color:var(--muted)">· SFO</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--both)"></div>
+        <span style="color:var(--both)">Together in BLR</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="summary-card azra">
+      <div class="traveler-name azra">Azra</div>
+      <div class="traveler-route">SEA → LHR → BLR → CDG → SEA</div>
+      <div class="traveler-stats">
+        <div class="stat">
+          <div class="stat-label">Outbound</div>
+          <div class="stat-value">DL 20 + VS 316</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Return</div>
+          <div class="stat-value">AF 191 + DL 81</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Departs BLR</div>
+          <div class="stat-value">Mar 30, 1:25 AM</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Arrives SEA</div>
+          <div class="stat-value">Mar 30, 5:38 PM</div>
+        </div>
+      </div>
+    </div>
+    <div class="summary-card sameera">
+      <div class="traveler-name sameera">Sameera</div>
+      <div class="traveler-route">SFO → FRA → BLR → FRA → SFO</div>
+      <div class="traveler-stats">
+        <div class="stat">
+          <div class="stat-label">Outbound</div>
+          <div class="stat-value">LH 455 + LH 754</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Return</div>
+          <div class="stat-value">LH 755 + LH 454</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Departs BLR</div>
+          <div class="stat-value">Mar 30, 3:00 AM</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Arrives SFO</div>
+          <div class="stat-value">Mar 30, 12:40 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTBOUND -->
+  <div class="phase-label outbound">✈ Outbound — Wed, Mar 11</div>
+
+  <!-- Azra: SEA → LHR -->
+  <div class="flight-row azra" style="animation-delay:0.25s">
+    <div class="time-col">
+      <div class="depart-time">5:40 PM</div>
+      <div class="depart-tz">PDT</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>SEA</span><span class="arrow">→</span><span>LHR</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">DL 20</span>
+        <span class="route-detail">Delta</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 12 · 10:30 AM GMT</div>
+    </div>
+    <div class="traveler-badge"><span class="badge azra">Azra</span></div>
+  </div>
+
+  <!-- Sameera: SFO → FRA -->
+  <div class="flight-row sameera" style="animation-delay:0.3s">
+    <div class="time-col">
+      <div class="depart-time">3:40 PM</div>
+      <div class="depart-tz">PDT</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>SFO</span><span class="arrow">→</span><span>FRA</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">LH 455</span>
+        <span class="route-detail">Lufthansa</span>
+        <span class="route-detail">Terminal 1</span>
+        <span class="route-detail">Conf: 85YZP8</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 12 · 10:30 AM GMT+1</div>
+    </div>
+    <div class="traveler-badge"><span class="badge sameera">Sameera</span></div>
+  </div>
+
+  <!-- Thu, Mar 12 layovers & connections -->
+  <div class="phase-label" style="animation-delay:0.35s; animation: fadeUp 0.5s 0.35s ease both;">⟳ Thu, Mar 12 — Connections</div>
+
+  <!-- Azra layover LHR -->
+  <div class="layover-row" style="animation-delay:0.38s">
+    <div class="layover-line"></div>
+    <div class="layover-icon">⏱</div>
+    <span style="color:var(--azra)">Azra</span>&nbsp;— 1h 25m layover in London (LHR)
+  </div>
+
+  <!-- Azra: LHR → BLR -->
+  <div class="flight-row azra" style="animation-delay:0.4s">
+    <div class="time-col">
+      <div class="depart-time">11:55 AM</div>
+      <div class="depart-tz">GMT</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>LHR</span><span class="arrow">→</span><span>BLR</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">VS 316</span>
+        <span class="route-detail">Virgin Atlantic</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 13 · 3:20 AM GMT+5:30</div>
+    </div>
+    <div class="traveler-badge"><span class="badge azra">Azra</span></div>
+  </div>
+
+  <!-- Sameera layover FRA -->
+  <div class="layover-row" style="animation-delay:0.43s">
+    <div class="layover-line"></div>
+    <div class="layover-icon">⏱</div>
+    <span style="color:var(--sameera)">Sameera</span>&nbsp;— 2h 5m layover in Frankfurt (FRA)
+  </div>
+
+  <!-- Sameera: FRA → BLR -->
+  <div class="flight-row sameera" style="animation-delay:0.45s">
+    <div class="time-col">
+      <div class="depart-time">12:35 PM</div>
+      <div class="depart-tz">GMT+1</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>FRA</span><span class="arrow">→</span><span>BLR</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">LH 754</span>
+        <span class="route-detail">Lufthansa</span>
+        <span class="route-detail">Terminal 1</span>
+        <span class="route-detail">Conf: 85YZP8</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 13 · 1:50 AM GMT+5:30</div>
+    </div>
+    <div class="traveler-badge"><span class="badge sameera">Sameera</span></div>
+  </div>
+
+  <!-- STAY IN BLR -->
+  <div class="phase-label stay" style="animation-delay:0.5s">🇮🇳 In Bengaluru</div>
+
+  <div class="stay-card" style="animation-delay:0.52s">
+    <div class="stay-nights">17</div>
+    <div class="stay-label">nights together in Bengaluru</div>
+    <div class="stay-dates">Mar 13 – Mar 30, 2026</div>
+    <div class="arrival-grid">
+      <div class="arrival-item">
+        <div class="arrival-label">Azra arrives</div>
+        <div class="arrival-time azra">Mar 13 · 3:20 AM IST</div>
+      </div>
+      <div class="arrival-item">
+        <div class="arrival-label">Sameera arrives</div>
+        <div class="arrival-time sameera">Mar 13 · 1:50 AM IST</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETURN -->
+  <div class="phase-label return" style="animation-delay:0.55s">✈ Return — Mon, Mar 30</div>
+
+  <!-- Sameera: BLR → FRA (departs first) -->
+  <div class="flight-row sameera" style="animation-delay:0.57s">
+    <div class="time-col">
+      <div class="depart-time">3:00 AM</div>
+      <div class="depart-tz">GMT+5:30</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>BLR</span><span class="arrow">→</span><span>FRA</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">LH 755</span>
+        <span class="route-detail">Lufthansa</span>
+        <span class="route-detail">Terminal 2</span>
+        <span class="route-detail">Conf: 85YZP8</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 30 · 9:05 AM GMT+2</div>
+    </div>
+    <div class="traveler-badge"><span class="badge sameera">Sameera</span></div>
+  </div>
+
+  <!-- Azra: BLR → CDG -->
+  <div class="flight-row azra" style="animation-delay:0.6s">
+    <div class="time-col">
+      <div class="depart-time">1:25 AM</div>
+      <div class="depart-tz">GMT+5:30</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>BLR</span><span class="arrow">→</span><span>CDG</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">AF 191</span>
+        <span class="route-detail">Air France</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 30 · 8:15 AM GMT+2</div>
+    </div>
+    <div class="traveler-badge"><span class="badge azra">Azra</span></div>
+  </div>
+
+  <!-- Sameera layover FRA return -->
+  <div class="layover-row" style="animation-delay:0.63s">
+    <div class="layover-line"></div>
+    <div class="layover-icon">⏱</div>
+    <span style="color:var(--sameera)">Sameera</span>&nbsp;— 1h 20m layover in Frankfurt (FRA)
+  </div>
+
+  <!-- Sameera: FRA → SFO -->
+  <div class="flight-row sameera" style="animation-delay:0.65s">
+    <div class="time-col">
+      <div class="depart-time">10:25 AM</div>
+      <div class="depart-tz">GMT+2</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>FRA</span><span class="arrow">→</span><span>SFO</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">LH 454</span>
+        <span class="route-detail">Lufthansa</span>
+        <span class="route-detail">Terminal 1</span>
+        <span class="route-detail">Conf: 85YZP8</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 30 · 12:40 PM PDT</div>
+    </div>
+    <div class="traveler-badge"><span class="badge sameera">Sameera</span></div>
+  </div>
+
+  <!-- Azra layover CDG return -->
+  <div class="layover-row" style="animation-delay:0.68s">
+    <div class="layover-line"></div>
+    <div class="layover-icon">⏱</div>
+    <span style="color:var(--azra)">Azra</span>&nbsp;— 7h 45m layover in Paris (CDG)
+  </div>
+
+  <!-- Azra: CDG → SEA -->
+  <div class="flight-row azra" style="animation-delay:0.7s">
+    <div class="time-col">
+      <div class="depart-time">4:00 PM</div>
+      <div class="depart-tz">GMT+2</div>
+    </div>
+    <div class="route-col">
+      <div class="route-airports">
+        <span>CDG</span><span class="arrow">→</span><span>SEA</span>
+      </div>
+      <div class="route-details">
+        <span class="route-detail">DL 81</span>
+        <span class="route-detail">Delta</span>
+      </div>
+      <div class="route-arrive">Arrives Mar 30 · 5:38 PM PDT</div>
+    </div>
+    <div class="traveler-badge"><span class="badge azra">Azra</span></div>
+  </div>
+
+</div>
+</body>
+</html>
